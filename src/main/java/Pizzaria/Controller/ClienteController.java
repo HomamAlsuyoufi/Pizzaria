@@ -3,6 +3,7 @@ package Pizzaria.Controller;
 import Pizzaria.Entiny.Cliente;
 import Pizzaria.Service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,11 @@ public class ClienteController {
             }else{
                 return ResponseEntity.notFound().build();
             }
-        }catch (Exception e){
+        } catch (DataIntegrityViolationException e){
+            return ResponseEntity.internalServerError().body("Error: "+ e.getCause().getCause().getMessage());
+        } catch (RuntimeException e){
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        } catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "pedido",schema = "public")
 public class Pedido {
     @Id
+    @Getter@Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Getter @Setter
