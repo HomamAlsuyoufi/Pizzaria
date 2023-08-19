@@ -32,8 +32,11 @@ public class ClienteController {
         try{
             Cliente novoCliente = service.cadastrar(cliente);
             return ResponseEntity.ok("Cliente cadastrado com sucesso");
-        }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }catch (DataIntegrityViolationException e){
+            return ResponseEntity.internalServerError().body("Error: "+ e.getCause().getCause().getMessage());
+        }
+        catch (RuntimeException e){
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
 
@@ -41,17 +44,17 @@ public class ClienteController {
     public ResponseEntity<?> editar(@PathVariable Long id,@RequestBody Cliente cliente){
         try {
             Cliente clienteAtualizado = service.editar(id, cliente);
-            if (clienteAtualizado != null){
+            if (clienteAtualizado != null) {
                 return ResponseEntity.ok("Cliente atualizado com sucesso");
-            }else{
+            } else {
                 return ResponseEntity.notFound().build();
             }
-        } catch (DataIntegrityViolationException e){
+        }
+        catch (DataIntegrityViolationException e){
             return ResponseEntity.internalServerError().body("Error: "+ e.getCause().getCause().getMessage());
-        } catch (RuntimeException e){
+        }
+        catch (RuntimeException e){
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
-        } catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
